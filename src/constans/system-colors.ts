@@ -1,0 +1,18 @@
+export const systemColors = {
+  mainColor: '#2C333A',
+  mainGreen: '#84C13D',
+  darkGray: '#838589',
+  blueOcean: '#3669C9',
+  offGrey: '#FAFAFA',
+  halfGrey: '#C4C5C4',
+  black: '#000000',
+  yellow: '#FFCA42',
+  Grey04: '#384349',
+  solid: '#F4F6F6',
+  mainBlack: '#111111',
+  white: '#FFFFFF',
+  ink: '#7A7E80',
+  red: '#D14343',
+  grey: '#8B8B8B',
+  greyBg: '#E0E0E0',
+};
