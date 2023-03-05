@@ -14,6 +14,7 @@ export type HomeAppStackScreenProps<T extends keyof HomeAppParamList> =
   NativeStackScreenProps<HomeAppParamList, T>;
 
 export type RootStackParamList = {
+  SplashScreen: undefined;
   LoginScreen: undefined;
   RegisterScreen: undefined;
   HomeStackApp: NavigatorScreenParams<HomeAppParamList>;

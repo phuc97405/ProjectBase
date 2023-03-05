@@ -11,9 +11,9 @@ import {
   ViewStyle,
   Text,
 } from 'react-native';
-// import icons from '~assets/icons';
+import icons from '~assets/icons';
 import Text1 from '~components/text/text-1/Text1';
-import {getSize, WithDesign} from '~utils/system/dimensions';
+import {systemColors} from '~constans/system-colors';
 
 export enum InputTextError {
   EMAIL_E = 'Email is not empty',
@@ -47,7 +47,6 @@ const TextField = (props: textfieldProps, ref: any): any => {
     },
     editable = true,
     value,
-    typeInput,
     textError,
     isSearch = false,
     iconStyle = {},
@@ -58,7 +57,7 @@ const TextField = (props: textfieldProps, ref: any): any => {
       return null;
     }
 
-    if (typeInput === 'pass' && value && value.length > 0) {
+    if (value && value.length > 0) {
       return (
         <Pressable
           style={styles.containerPressable}
@@ -77,19 +76,11 @@ const TextField = (props: textfieldProps, ref: any): any => {
   return (
     <>
       <View style={[styles.container, customContainerView]}>
-        {isSearch && (
-          <Image
-            style={[styles.iconSearch, iconStyle]}
-            source={icons.ic_search}
-            resizeMode="contain"
-          />
-        )}
         <TextInput
           {...props}
           ref={ref}
           spellCheck={false}
-          secureTextEntry={secureTextEntry}
-          // secureTextEntry={showText && typeInput === 'pass' ? true : false}
+          secureTextEntry={showText && secureTextEntry}
           autoCorrect={false}
           editable={editable}
           autoCapitalize="none"
@@ -110,15 +101,15 @@ export default forwardRef(TextField);
 
 const styles = StyleSheet.create({
   stInputText: {
-    paddingVertical: getSize(15, WithDesign.w),
-    fontSize: getSize(16, WithDesign.w),
+    paddingVertical: 15,
+    fontSize: 15,
     fontWeight: '400',
     flex: 1,
     color: systemColors.black,
   },
   container: {
-    paddingHorizontal: getSize(20, WithDesign.w),
-    borderRadius: getSize(8, WithDesign.w),
+    paddingHorizontal: 20,
+    borderRadius: 8,
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -126,24 +117,24 @@ const styles = StyleSheet.create({
   stIconPencil: {
     width: 15,
     height: 15,
-    tintColor: systemColors.placeholder,
+    tintColor: systemColors.greyBg,
   },
   stTextError: {
-    color: systemColors.redEF,
-    fontSize: getSize(18, WithDesign.w),
-    marginBottom: getSize(16, WithDesign.w),
+    color: systemColors.red,
+    fontSize: 18,
+    marginBottom: 16,
   },
   iconSearch: {
-    width: getSize(32, WithDesign.w),
-    height: getSize(32, WithDesign.w),
+    width: 32,
+    height: 32,
     tintColor: systemColors.white,
-    marginRight: getSize(16, WithDesign.w),
+    marginRight: 16,
   },
   viewTextWarning: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: getSize(25, WithDesign.w),
-    marginTop: getSize(4, WithDesign.w),
+    height: 25,
+    marginTop: 4,
   },
-  containerPressable: {paddingLeft: getSize(20, WithDesign.w)},
+  containerPressable: {paddingLeft: 20},
 });

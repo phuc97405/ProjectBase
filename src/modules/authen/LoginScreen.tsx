@@ -6,50 +6,46 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import TextField from '~components/text-field/TextField';
 import {navigationServices} from '~navigation/navigation-services';
-// import {
-//   HCESession,
-//   NFCTagType4NDEFContentType,
-//   NFCTagType4,
-// } from 'react-native-hce';
+import {validateEmail} from '~utils';
+import {systemColors} from '../../constans/system-colors';
 
 const LoginScreen = () => {
   const passRef = useRef<any>();
   const [userName, setUserName] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const msgValidateEmail = useRef<string>('');
 
-  let session;
-
-  // const startSession = async () => {
-  //   const tag = new NFCTagType4({
-  //     type: NFCTagType4NDEFContentType.Text,
-  //     content: 'Hello world',
-  //     writable: false,
-  //   });
-
-  //   session = await HCESession.getInstance();
-  //   session.setApplication(tag);
-  //   await session.setEnabled(true);
-  // };
-
+  const onSubmitEmail = () => {
+    validateEmail(userName)
+      ? (msgValidateEmail.current = '')
+      : (msgValidateEmail.current = 'format email not valid');
+  };
   useEffect(() => {
-    // startSession();
+    return () => {};
   }, []);
 
   return (
     <View style={styles.container}>
-      <TextInput
+      <TextField
+        customContainerView={styles.containerInputField}
         placeholder="Username"
         returnKeyType="next"
         onChangeText={value => setUserName(value)}
-        value={userName}
         autoFocus
-        onSubmitEditing={() => passRef.current?.focus()}
+        textError={msgValidateEmail.current}
+        onSubmitEditing={() => {
+          onSubmitEmail();
+          passRef.current?.focus();
+        }}
       />
-      <TextInput
+      <TextField
+        customContainerView={styles.containerInputField}
         ref={passRef}
         placeholder="Password"
         returnKeyType="done"
+        secureTextEntry
         value={password}
         onChangeText={value => setPassword(value)}
       />
@@ -65,6 +61,20 @@ const LoginScreen = () => {
 export default LoginScreen;
 
 const styles = StyleSheet.create({
-  container: {flex: 1, justifyContent: 'center'},
-  btnLogin: {backgroundColor: 'green', paddingVertical: 10},
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: systemColors.darkGray,
+    paddingHorizontal: 20,
+  },
+  btnLogin: {
+    backgroundColor: 'green',
+    paddingVertical: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  containerInputField: {
+    backgroundColor: systemColors.halfGrey,
+    marginBottom: 15,
+  },
 });

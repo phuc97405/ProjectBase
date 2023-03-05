@@ -1,12 +1,15 @@
 import {NavigationContainer} from '@react-navigation/native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {SafeAreaView, StatusBar, useColorScheme} from 'react-native';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import LoginScreen from '~modules/authen/LoginScreen';
 import HomeScreen from '~modules/home/HomeScreen';
+import SplashScreen from '~modules/splash/SplashScreen';
 import {navigationRef} from '~navigation/navigation-services';
 import {RootStack, RootStackScreen} from '~navigation/types';
+import {setDefaultPropsNativeComponent} from './src/utils/system/default-styles';
+import SplashScreenMD from 'react-native-splash-screen';
 
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -14,6 +17,9 @@ const App = () => {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
     flex: 1,
   };
+  useEffect(() => {
+    setDefaultPropsNativeComponent();
+  }, []);
 
   const StackHomeApp = () => {
     return (
@@ -33,10 +39,13 @@ const App = () => {
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={backgroundStyle.backgroundColor}
       />
-      <NavigationContainer ref={navigationRef}>
+      <NavigationContainer
+        onReady={() => SplashScreenMD.hide()}
+        ref={navigationRef}>
         <RootStack.Navigator
-          initialRouteName="LoginScreen"
+          initialRouteName="SplashScreen"
           screenOptions={{header: () => null}}>
+          <RootStack.Screen name="SplashScreen" component={SplashScreen} />
           <RootStack.Screen name="LoginScreen" component={LoginScreen} />
           {/* <RootStack.Screen name='RegisterScreen' component={RegisterScreen} /> */}
           <RootStack.Screen name="HomeStackApp" component={StackHomeApp} />
