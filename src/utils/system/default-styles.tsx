@@ -17,7 +17,7 @@ export const setDefaultPropsNativeComponent = async () => {
   setCustomText(propText);
 
   const propTextInput = {
-    placeholderTextColor: 'red',
+    placeholderTextColor: systemColors.placeHolderBlack,
     maxFontSizeMultiplier: 0,
     allowFontScaling: false,
     style: {

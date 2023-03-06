@@ -1,30 +1,15 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {observer} from 'mobx-react-lite';
+import React, {useEffect, useRef} from 'react';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import TextField from '~components/text-field/TextField';
-import {navigationServices} from '~navigation/navigation-services';
-import {validateEmail} from '~utils';
-import {systemColors} from '../../constans/system-colors';
+import {systemColors} from '~constans/system-colors';
+import {FONTS} from '~constans/system-fonts';
+import {useViewModel} from '~utils/hook';
+import {AuthenModel} from './authen-model';
 
 const LoginScreen = () => {
   const passRef = useRef<any>();
-  const [userName, setUserName] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const msgValidateEmail = useRef<string>('');
-
-  const onSubmitEmail = () => {
-    validateEmail(userName)
-      ? (msgValidateEmail.current = '')
-      : (msgValidateEmail.current = 'format email not valid');
-  };
-  useEffect(() => {
-    return () => {};
-  }, []);
+  const viewModel = useViewModel(AuthenModel);
 
   return (
     <View style={styles.container}>
@@ -32,12 +17,11 @@ const LoginScreen = () => {
         customContainerView={styles.containerInputField}
         placeholder="Username"
         returnKeyType="next"
-        onChangeText={value => setUserName(value)}
+        onChangeText={viewModel.setUsername}
         autoFocus
-        textError={msgValidateEmail.current}
+        textError={viewModel.msgValidateEmail}
         onSubmitEditing={() => {
-          onSubmitEmail();
-          passRef.current?.focus();
+          viewModel.onSubmitEmail(passRef);
         }}
       />
       <TextField
@@ -46,19 +30,19 @@ const LoginScreen = () => {
         placeholder="Password"
         returnKeyType="done"
         secureTextEntry
-        value={password}
-        onChangeText={value => setPassword(value)}
+        value={viewModel.password}
+        onChangeText={viewModel.setPassword}
       />
       <TouchableOpacity
-        onPress={() => navigationServices.navigate('HomeStackApp')}
+        onPress={() => viewModel.handleLogin()}
         style={styles.btnLogin}>
-        <Text>Login</Text>
+        <Text style={styles.txtSubmit}>Login</Text>
       </TouchableOpacity>
     </View>
   );
 };
 
-export default LoginScreen;
+export default observer(LoginScreen);
 
 const styles = StyleSheet.create({
   container: {
@@ -76,5 +60,10 @@ const styles = StyleSheet.create({
   containerInputField: {
     backgroundColor: systemColors.halfGrey,
     marginBottom: 15,
+  },
+  txtSubmit: {
+    fontSize: 25,
+    color: systemColors.white,
+    fontFamily: FONTS.RobotoItalic,
   },
 });

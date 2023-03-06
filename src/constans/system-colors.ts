@@ -10,7 +10,7 @@ export const systemColors = {
   Grey04: '#384349',
   solid: '#F4F6F6',
   mainBlack: '#111111',
-  placeHolderBlack: 'black',
+  placeHolderBlack: '#838589',
   white: '#FFFFFF',
   ink: '#7A7E80',
   red: '#D14343',
