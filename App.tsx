@@ -10,6 +10,7 @@ import {navigationRef} from '~navigation/navigation-services';
 import {RootStack, RootStackScreen} from '~navigation/types';
 import {setDefaultPropsNativeComponent} from './src/utils/system/default-styles';
 import SplashScreenMD from 'react-native-splash-screen';
+import {QueryClient, QueryClientProvider} from 'react-query';
 
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -17,6 +18,8 @@ const App = () => {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
     flex: 1,
   };
+  const queryClient = new QueryClient();
+
   useEffect(() => {
     setDefaultPropsNativeComponent();
   }, []);
@@ -39,17 +42,19 @@ const App = () => {
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={backgroundStyle.backgroundColor}
       />
-      <NavigationContainer
-        onReady={() => SplashScreenMD.hide()}
-        ref={navigationRef}>
-        <RootStack.Navigator
-          initialRouteName="SplashScreen"
-          screenOptions={{header: () => null}}>
-          <RootStack.Screen name="SplashScreen" component={SplashScreen} />
-          <RootStack.Screen name="LoginScreen" component={LoginScreen} />
-          <RootStack.Screen name="HomeStackApp" component={StackHomeApp} />
-        </RootStack.Navigator>
-      </NavigationContainer>
+      <QueryClientProvider client={queryClient}>
+        <NavigationContainer
+          onReady={() => SplashScreenMD.hide()}
+          ref={navigationRef}>
+          <RootStack.Navigator
+            initialRouteName="SplashScreen"
+            screenOptions={{header: () => null}}>
+            <RootStack.Screen name="SplashScreen" component={SplashScreen} />
+            <RootStack.Screen name="LoginScreen" component={LoginScreen} />
+            <RootStack.Screen name="HomeStackApp" component={StackHomeApp} />
+          </RootStack.Navigator>
+        </NavigationContainer>
+      </QueryClientProvider>
     </SafeAreaView>
   );
 };

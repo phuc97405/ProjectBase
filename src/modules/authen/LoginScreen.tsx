@@ -1,19 +1,42 @@
 import {observer} from 'mobx-react-lite';
-import React, {useEffect, useRef} from 'react';
+import React, {useRef} from 'react';
+import {SubmitErrorHandler, useForm, useController} from 'react-hook-form';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import TextField from '~components/text-field/TextField';
+import FormTextInput from '~components/text-field/FormTextInput';
 import {systemColors} from '~constans/system-colors';
 import {FONTS} from '~constans/system-fonts';
 import {useViewModel} from '~utils/hook';
 import {AuthenModel} from './authen-model';
 
+type FormValues = {
+  username: string;
+  password: string;
+};
 const LoginScreen = () => {
   const passRef = useRef<any>();
-  const viewModel = useViewModel(AuthenModel);
+  // const viewModel = useViewModel(AuthenModel);
+  const {
+    register,
+    setValue,
+    handleSubmit,
+    control,
+    reset,
+    getValues,
+    formState: {errors},
+  } = useForm();
+  // const onSubmit = () => {
+  //   console.log('onSubmit', errors);
+  //   console.log(getValues());
+  // };
+  const onSubmit = (data: any) => console.log(data, errors);
+
+  // const onError: NewType = (errors, e) => {
+  //   return console.log(errors);
+  // };
 
   return (
     <View style={styles.container}>
-      <TextField
+      {/* <TextField
         customContainerView={styles.containerInputField}
         placeholder="Username"
         returnKeyType="next"
@@ -23,8 +46,9 @@ const LoginScreen = () => {
         onSubmitEditing={() => {
           viewModel.onSubmitEmail(passRef);
         }}
-      />
-      <TextField
+      /> */}
+
+      {/* <TextField
         customContainerView={styles.containerInputField}
         ref={passRef}
         placeholder="Password"
@@ -32,9 +56,34 @@ const LoginScreen = () => {
         secureTextEntry
         value={viewModel.password}
         onChangeText={viewModel.setPassword}
+      /> */}
+
+      <Text>user name</Text>
+
+      <FormTextInput
+        // style={styles.containerInputField}
+        control={control}
+        name="username"
+        rules={{require: true}}
+        placeholder="Please enter your username!"
+        errorMessage="This field is required Username!"
       />
+
+      <Text>password</Text>
+
+      {/* <FormTextInput
+        control={control}
+        name="password"
+        rules={{require: true}}
+        placeholder="Please enter your password!"
+        errorMessage="This field is required Password!"
+      /> */}
+
       <TouchableOpacity
-        onPress={() => viewModel.handleLogin()}
+        onPress={
+          handleSubmit(onSubmit)
+          // viewModel.handleLogin();
+        }
         style={styles.btnLogin}>
         <Text style={styles.txtSubmit}>Login</Text>
       </TouchableOpacity>
@@ -42,7 +91,9 @@ const LoginScreen = () => {
   );
 };
 
-export default observer(LoginScreen);
+export default // observer(
+LoginScreen;
+// );
 
 const styles = StyleSheet.create({
   container: {

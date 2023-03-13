@@ -51,6 +51,7 @@ class AuthenModel {
       const response = await authenticateService.login_api(body);
       if (get(response, 'data.data')) {
         await localServices.saveToken(get(response, 'data.data'));
+        await authenticateService.verify();
         navigationServices.replace('HomeStackApp');
       }
     } catch (error) {
