@@ -1,20 +1,37 @@
-import {observer} from 'mobx-react-lite';
 import React, {useRef} from 'react';
-import {SubmitErrorHandler, useForm, useController} from 'react-hook-form';
+import {useForm} from 'react-hook-form';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import FormTextInput from '~components/text-field/FormTextInput';
 import {systemColors} from '~constans/system-colors';
 import {FONTS} from '~constans/system-fonts';
-import {useViewModel} from '~utils/hook';
-import {AuthenModel} from './authen-model';
+import * as yup from 'yup';
+import {yupResolver} from '@hookform/resolvers/yup';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import Text1 from '~components/text/text-1/Text1';
+import {useMutation} from '@tanstack/react-query';
+import {localServices} from '~services/local-service';
+import {authenticateService} from '~services/api';
+import handleApiError from '~services/api/handle-api_error';
+import Loading from '~components/loading/Loading';
 
 type FormValues = {
   username: string;
   password: string;
 };
 const LoginScreen = () => {
-  const passRef = useRef<any>();
-  // const viewModel = useViewModel(AuthenModel);
+  const inset = useSafeAreaInsets();
+  const loginValidationSchema = yup.object().shape({
+    username: yup
+      .string()
+      // .email('Please enter valid email')
+      // .matches(/^\d+$/, {message: 'is format email'})
+      .required('Username is Required'),
+    password: yup
+      .string()
+      .min(6, ({min}) => `Password must be at least ${min} characters`)
+      .required('Password is required'),
+  });
+  const passRef = useRef<any>(null);
   const {
     register,
     setValue,
@@ -23,98 +40,135 @@ const LoginScreen = () => {
     reset,
     getValues,
     formState: {errors},
-  } = useForm();
+  } = useForm<FormValues>({
+    defaultValues: {username: '', password: ''},
+    mode: 'onSubmit',
+    resolver: yupResolver(loginValidationSchema),
+  });
+  const handleLoginApi = async (data: FormValues) => {
+    try {
+      const res = await authenticateService.login_api(data);
+      // if (get(res, 'data.data')) {
+      //   await localServices.saveToken(get(res, 'data.data'));
+      //   await authenticateService.verify();
+
+      return res?.data?.data;
+      // navigationServices.replace('HomeStackApp');s
+      // }
+    } catch (error) {
+      handleApiError(error);
+    }
+  };
+  const {mutate, isLoading, isSuccess} = useMutation({
+    // queryKey: ['LOGIN_KEY'],
+    mutationFn: handleLoginApi,
+    async onSuccess(data, variables, context) {
+      console.log('data', data);
+      await localServices.saveToken(data);
+      await authenticateService.verify();
+    },
+    onError(err) {
+      console.log('eerrrrr query', errors);
+    },
+  });
+
+  // const viewModel = useViewModel(AuthenModel);
+
   // const onSubmit = () => {
   //   console.log('onSubmit', errors);
   //   console.log(getValues());
   // };
-  const onSubmit = (data: any) => console.log(data, errors);
+  const userRef = useRef<any>(null);
+  const onSubmit = (data: any) => {
+    mutate(data);
+    // passRef?.current?.focus();
+  };
 
   // const onError: NewType = (errors, e) => {
   //   return console.log(errors);
   // };
 
   return (
-    <View style={styles.container}>
-      {/* <TextField
-        customContainerView={styles.containerInputField}
-        placeholder="Username"
-        returnKeyType="next"
-        onChangeText={viewModel.setUsername}
-        autoFocus
-        textError={viewModel.msgValidateEmail}
-        onSubmitEditing={() => {
-          viewModel.onSubmitEmail(passRef);
-        }}
-      /> */}
+    <View style={[styles.container, {marginBottom: inset.bottom || 0}]}>
+      <View style={styles.body}>
+        <Text1 fontType={2} regular style={styles.txtTitle}>
+          Username
+        </Text1>
 
-      {/* <TextField
-        customContainerView={styles.containerInputField}
-        ref={passRef}
-        placeholder="Password"
-        returnKeyType="done"
-        secureTextEntry
-        value={viewModel.password}
-        onChangeText={viewModel.setPassword}
-      /> */}
+        <FormTextInput
+          ref={userRef}
+          control={control}
+          customContainerView={styles.containerInputField}
+          name="username"
+          returnKeyType="next"
+          // rules={{require: true}}
+          placeholder="Please enter your username!"
+          errorMessage={errors?.username?.message!}
+          onSubmitEditing={() => passRef?.current?.focus()}
+        />
 
-      <Text>user name</Text>
+        <Text1 fontType={2} regular style={styles.txtTitle}>
+          Password
+        </Text1>
+        <FormTextInput
+          ref={passRef}
+          control={control}
+          customContainerView={styles.containerInputField}
+          name="password"
+          returnKeyType="done"
+          // rules={{require: true}}
+          placeholder="Please enter your password!"
+          secureTextEntry
+          errorMessage={errors?.password?.message!}
+          onSubmitEditing={() => userRef?.current?.focus()}
+        />
 
-      <FormTextInput
-        // style={styles.containerInputField}
-        control={control}
-        name="username"
-        rules={{require: true}}
-        placeholder="Please enter your username!"
-        errorMessage="This field is required Username!"
-      />
-
-      <Text>password</Text>
-
-      {/* <FormTextInput
-        control={control}
-        name="password"
-        rules={{require: true}}
-        placeholder="Please enter your password!"
-        errorMessage="This field is required Password!"
-      /> */}
-
-      <TouchableOpacity
-        onPress={
-          handleSubmit(onSubmit)
-          // viewModel.handleLogin();
-        }
-        style={styles.btnLogin}>
-        <Text style={styles.txtSubmit}>Login</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          onPress={
+            handleSubmit(onSubmit)
+            // viewModel.handleLogin();
+          }
+          style={styles.btnLogin}>
+          <Text style={styles.txtSubmit}>Login</Text>
+        </TouchableOpacity>
+      </View>
+      <Loading isVisible={isLoading} />
     </View>
   );
 };
 
-export default // observer(
-LoginScreen;
-// );
+export default LoginScreen;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    backgroundColor: systemColors.darkGray,
+    backgroundColor: systemColors.white,
+  },
+  body: {
+    marginTop: 20,
+    flex: 1,
     paddingHorizontal: 20,
+    justifyContent: 'center',
   },
   btnLogin: {
     backgroundColor: 'green',
     paddingVertical: 15,
     borderRadius: 8,
     alignItems: 'center',
+    marginTop: 20,
   },
   containerInputField: {
     backgroundColor: systemColors.halfGrey,
-    marginBottom: 15,
+    //marginBottom: 15,
   },
   txtSubmit: {
     fontSize: 25,
     color: systemColors.white,
     fontFamily: FONTS.RobotoItalic,
+  },
+  txtTitle: {
+    fontSize: 20,
+    lineHeight: 38,
+    color: systemColors.Grey04,
   },
 });

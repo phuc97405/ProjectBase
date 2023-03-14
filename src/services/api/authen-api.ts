@@ -6,7 +6,7 @@ export type TypeLoginReq = {
   password: string;
 };
 class Authenticate {
-  login_api = async (body: TypeLoginReq) => {
+  login_api = async (body: any) => {
     const res = await BaseAPI.post(AUTHEN_URL.loginAPI, body);
     return res;
   };

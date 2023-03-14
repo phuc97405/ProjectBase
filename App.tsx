@@ -10,7 +10,7 @@ import {navigationRef} from '~navigation/navigation-services';
 import {RootStack, RootStackScreen} from '~navigation/types';
 import {setDefaultPropsNativeComponent} from './src/utils/system/default-styles';
 import SplashScreenMD from 'react-native-splash-screen';
-import {QueryClient, QueryClientProvider} from 'react-query';
+import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';

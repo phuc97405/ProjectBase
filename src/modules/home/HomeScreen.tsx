@@ -4,7 +4,12 @@ import {localServices} from '~services/local-service';
 import {navigationServices} from '~navigation/navigation-services';
 import {authenticateService} from '~services/api';
 import Loading from '~components/loading/Loading';
-import {useInfiniteQuery, useMutation, useQueryClient} from 'react-query';
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query';
+// import {useInfiniteQuery, useMutation, useQueryClient} from 'react-query';
 const HomeScreen = () => {
   const [page, setPage] = useState<number>(1);
   const [limit, setLimit] = useState<number>(10);
@@ -19,7 +24,7 @@ const HomeScreen = () => {
       console.log(error);
     }
   };
-  const getListData = useInfiniteQuery('getListRecent', getListDataApi, {
+  const getListData = useInfiniteQuery(['getListRecent'], getListDataApi, {
     getNextPageParam: (_lastPage, pages) => {
       if (_lastPage.metaData.currentPage < _lastPage.metaData.totalPages) {
         return _lastPage.metaData.currentPage + 1;
@@ -39,11 +44,11 @@ const HomeScreen = () => {
     } catch (error) {}
   };
 
-  const editData = useMutation(updateItem, {
-    onSuccess: data => {
-      queryClient.invalidateQueries('getListRecent');
-    },
-  });
+  // const editData = useMutation(updateItem, {
+  //   onSuccess: data => {
+  //     queryClient.invalidateQueries(['getListRecent']);
+  //   },
+  // });
 
   return (
     <View>

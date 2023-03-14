@@ -3,6 +3,7 @@
 import React from 'react';
 import {StyleProp, Text, TextStyle} from 'react-native';
 import {systemColors} from '~constans/system-colors';
+import {FONTS} from '~constans/system-fonts';
 // import {FONTS} from '../../../constants/system-fonts';
 
 export interface BaseTextProps {
@@ -40,13 +41,13 @@ export const BaseText = ({
   switch (fontType) {
     case 1: // roboto
       if (regular) {
-        // customStyle.fontFamily = FONTS.RobotoRegular;
+        customStyle.fontFamily = FONTS.RobotoBold;
       }
       if (bold) {
-        // customStyle.fontFamily = FONTS.RobotoBold;
+        customStyle.fontFamily = FONTS.RobotoBold;
       }
       if (medium) {
-        // customStyle.fontFamily = FONTS.RobotoMedium;
+        customStyle.fontFamily = FONTS.RobotoBold;
       }
       break;
     case 2: // nanum
