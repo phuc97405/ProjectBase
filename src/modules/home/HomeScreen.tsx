@@ -9,6 +9,7 @@ import {
   useMutation,
   useQueryClient,
 } from '@tanstack/react-query';
+
 // import {useInfiniteQuery, useMutation, useQueryClient} from 'react-query';
 const HomeScreen = () => {
   const [page, setPage] = useState<number>(1);
@@ -44,11 +45,11 @@ const HomeScreen = () => {
     } catch (error) {}
   };
 
-  // const editData = useMutation(updateItem, {
-  //   onSuccess: data => {
-  //     queryClient.invalidateQueries(['getListRecent']);
-  //   },
-  // });
+  const editData = useMutation(updateItem, {
+    onSuccess: data => {
+      queryClient.invalidateQueries(['getListRecent']);
+    },
+  });
 
   return (
     <View>
@@ -73,6 +74,12 @@ const HomeScreen = () => {
           navigationServices.navigate('LoginScreen');
         }}>
         <Text>Logout</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={async () => {
+          navigationServices.navigate('Animateded');
+        }}>
+        <Text>go to animated</Text>
       </TouchableOpacity>
       <Loading isVisible={isFetching} />
     </View>

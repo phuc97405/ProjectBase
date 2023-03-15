@@ -7,12 +7,13 @@ import {FONTS} from '~constans/system-fonts';
 import * as yup from 'yup';
 import {yupResolver} from '@hookform/resolvers/yup';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import Text1 from '~components/text/text-1/Text1';
+import Text1 from '~components/loading/text/text-1/Text1';
 import {useMutation} from '@tanstack/react-query';
 import {localServices} from '~services/local-service';
 import {authenticateService} from '~services/api';
 import handleApiError from '~services/api/handle-api_error';
 import Loading from '~components/loading/Loading';
+import {navigationServices} from '~navigation/navigation-services';
 
 type FormValues = {
   username: string;
@@ -48,24 +49,18 @@ const LoginScreen = () => {
   const handleLoginApi = async (data: FormValues) => {
     try {
       const res = await authenticateService.login_api(data);
-      // if (get(res, 'data.data')) {
-      //   await localServices.saveToken(get(res, 'data.data'));
-      //   await authenticateService.verify();
-
       return res?.data?.data;
-      // navigationServices.replace('HomeStackApp');s
-      // }
     } catch (error) {
       handleApiError(error);
     }
   };
   const {mutate, isLoading, isSuccess} = useMutation({
-    // queryKey: ['LOGIN_KEY'],
     mutationFn: handleLoginApi,
     async onSuccess(data, variables, context) {
       console.log('data', data);
       await localServices.saveToken(data);
       await authenticateService.verify();
+      navigationServices.replace('HomeStackApp');
     },
     onError(err) {
       console.log('eerrrrr query', errors);

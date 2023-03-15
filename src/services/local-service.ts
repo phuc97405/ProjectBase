@@ -25,7 +25,7 @@ class LocalService {
     await this.save();
   };
 
-  clearToken = () => {
+  clearToken = async () => {
     this.token = {
       accessToken: '',
       refreshToken: '',

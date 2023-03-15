@@ -12,7 +12,7 @@ import {
   Text,
 } from 'react-native';
 import icons from '~assets/icons';
-import Text1 from '~components/text/text-1/Text1';
+import Text1 from '~components/loading/text/text-1/Text1';
 import {systemColors} from '~constans/system-colors';
 
 export enum InputTextError {

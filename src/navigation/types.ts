@@ -8,6 +8,7 @@ export const RootStackScreen = createNativeStackNavigator<HomeAppParamList>();
 
 type HomeAppParamList = {
   Home: undefined;
+  Animateded: undefined;
 };
 
 export type HomeAppStackScreenProps<T extends keyof HomeAppParamList> =
