@@ -11,7 +11,6 @@ import {RootStack, RootStackScreen} from '~navigation/types';
 import {setDefaultPropsNativeComponent} from './src/utils/system/default-styles';
 import SplashScreenMD from 'react-native-splash-screen';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
-import Animateded from '~modules/home/Animated';
 
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -33,7 +32,6 @@ const App = () => {
           header: () => null,
         }}>
         <RootStackScreen.Screen name="Home" component={HomeScreen} />
-        <RootStackScreen.Screen name="Animateded" component={Animateded} />
       </RootStackScreen.Navigator>
     );
   };

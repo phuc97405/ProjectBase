@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import FormTextInput from '~components/text-field/FormTextInput';
@@ -14,6 +14,7 @@ import {authenticateService} from '~services/api';
 import handleApiError from '~services/api/handle-api_error';
 import Loading from '~components/loading/Loading';
 import {navigationServices} from '~navigation/navigation-services';
+import CountDown from '~components/count-down/CountDown';
 
 type FormValues = {
   username: string;
@@ -74,61 +75,78 @@ const LoginScreen = () => {
   //   console.log(getValues());
   // };
   const userRef = useRef<any>(null);
+  const [a, setA] = useState<number>(0);
   const onSubmit = (data: any) => {
-    mutate(data);
+    // mutate(data);
+    // setA(a + 1);
     // passRef?.current?.focus();
   };
 
+  const onClick = () => {
+    setA(a + 1);
+  };
   // const onError: NewType = (errors, e) => {
   //   return console.log(errors);
   // };
 
+  useEffect(() => {
+    console.log('useEffect cha', a);
+    // return () => {
+    //   console.log('return 1 time', a);
+    // };
+  }, []);
+
   return (
-    <View style={[styles.container, {marginBottom: inset.bottom || 0}]}>
-      <View style={styles.body}>
-        <Text1 fontType={2} regular style={styles.txtTitle}>
-          Username
-        </Text1>
+    <>
+      {console.log('Re - render Cha ne', a)}
+      <View style={[styles.container, {marginBottom: inset.bottom || 0}]}>
+        <View style={styles.body}>
+          <Text1 fontType={2} regular style={styles.txtTitle}>
+            Username a{a}
+          </Text1>
 
-        <FormTextInput
-          ref={userRef}
-          control={control}
-          customContainerView={styles.containerInputField}
-          name="username"
-          returnKeyType="next"
-          // rules={{require: true}}
-          placeholder="Please enter your username!"
-          errorMessage={errors?.username?.message!}
-          onSubmitEditing={() => passRef?.current?.focus()}
-        />
+          <FormTextInput
+            ref={userRef}
+            control={control}
+            customContainerView={styles.containerInputField}
+            name="username"
+            returnKeyType="next"
+            // rules={{require: true}}
+            placeholder="Please enter your username!"
+            errorMessage={errors?.username?.message!}
+            onSubmitEditing={() => passRef?.current?.focus()}
+          />
 
-        <Text1 fontType={2} regular style={styles.txtTitle}>
-          Password
-        </Text1>
-        <FormTextInput
-          ref={passRef}
-          control={control}
-          customContainerView={styles.containerInputField}
-          name="password"
-          returnKeyType="done"
-          // rules={{require: true}}
-          placeholder="Please enter your password!"
-          secureTextEntry
-          errorMessage={errors?.password?.message!}
-          onSubmitEditing={() => userRef?.current?.focus()}
-        />
+          <Text1 fontType={2} regular style={styles.txtTitle}>
+            Password
+          </Text1>
+          <FormTextInput
+            ref={passRef}
+            control={control}
+            customContainerView={styles.containerInputField}
+            name="password"
+            returnKeyType="done"
+            // rules={{require: true}}
+            placeholder="Please enter your password!"
+            secureTextEntry
+            errorMessage={errors?.password?.message!}
+            onSubmitEditing={() => userRef?.current?.focus()}
+          />
 
-        <TouchableOpacity
-          onPress={
-            handleSubmit(onSubmit)
-            // viewModel.handleLogin();
-          }
-          style={styles.btnLogin}>
-          <Text style={styles.txtSubmit}>Login</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            onPress={
+              // handleSubmit(onSubmit)
+              () => onClick()
+              // viewModel.handleLogin();
+            }
+            style={styles.btnLogin}>
+            <Text style={styles.txtSubmit}>Login</Text>
+          </TouchableOpacity>
+        </View>
+        <CountDown value={a} />
+        <Loading isVisible={isLoading} />
       </View>
-      <Loading isVisible={isLoading} />
-    </View>
+    </>
   );
 };
 
