@@ -10,7 +10,27 @@ import {navigationRef} from '~navigation/navigation-services';
 import {RootStack, RootStackScreen} from '~navigation/types';
 import {setDefaultPropsNativeComponent} from './src/utils/system/default-styles';
 import SplashScreenMD from 'react-native-splash-screen';
-import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
+import {
+  onlineManager,
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query';
+import NetInfo from '@react-native-community/netinfo';
+
+const queryClient = new QueryClient();
+
+if (__DEV__) {
+  import('react-query-native-devtools').then(({addPlugin}) => {
+    addPlugin({queryClient});
+  });
+}
+
+// onlineManager.setEventListener(setOnline => {
+//   return NetInfo.addEventListener(state => {
+//     console.log('setOnline', state.isConnected);
+//     setOnline(!!state.isConnected);
+//   });
+// });
 
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -18,7 +38,6 @@ const App = () => {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
     flex: 1,
   };
-  const queryClient = new QueryClient();
 
   useEffect(() => {
     setDefaultPropsNativeComponent();

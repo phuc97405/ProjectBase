@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {Text, TouchableOpacity, View} from 'react-native';
 import {localServices} from '~services/local-service';
 import {navigationServices} from '~navigation/navigation-services';
@@ -10,34 +10,48 @@ import {
   useQueryClient,
 } from '@tanstack/react-query';
 
-// import {useInfiniteQuery, useMutation, useQueryClient} from 'react-query';
 const HomeScreen = () => {
   const [page, setPage] = useState<number>(1);
   const [limit, setLimit] = useState<number>(10);
   const queryClient = useQueryClient();
-  const getListDataApi = async ({pageParam = 1}) => {
+  const idCoin = useRef<number>(2);
+  const getListDataApi = async ({pageParam = 1, queryKey}: any) => {
     try {
-      // const [, page] = pageParam;
-      const res = await authenticateService.testQuery('2', page, limit);
-      console.log('resssss', res);
-      return res?.data?.data;
+      const [, {idCoin}] = queryKey;
+      const res = await authenticateService.testQuery(idCoin, pageParam, limit);
+      const data = res?.data?.data;
+      return {data: data?.results, nextPage: data?.metaData};
     } catch (error) {
       console.log(error);
     }
   };
-  const getListData = useInfiniteQuery(['getListRecent'], getListDataApi, {
-    getNextPageParam: (_lastPage, pages) => {
-      if (_lastPage.metaData.currentPage < _lastPage.metaData.totalPages) {
-        return _lastPage.metaData.currentPage + 1;
-      }
+  const getListData = useInfiniteQuery(
+    ['getListRecent', {idCoin: idCoin.current}],
+    getListDataApi,
+    {
+      getNextPageParam: (_lastPage, pages) => {
+        if (_lastPage?.nextPage.currentPage < _lastPage?.nextPage.totalPages) {
+          return _lastPage?.nextPage.currentPage + 1;
+        } else return undefined;
+      },
+      onError(err) {
+        console.log(err);
+      },
     },
-  });
-  const {data, refetch, isFetching, fetchNextPage, hasNextPage, error} =
-    getListData || [];
-  let results = data?.pages.reduce(
-    (acc, page) => [...acc, ...page.results],
-    [],
   );
+  const {
+    data,
+    refetch,
+    isFetching,
+    fetchNextPage,
+    hasNextPage,
+    error,
+    isError,
+  } = getListData || [];
+  let results = data
+    ? data?.pages?.reduce((acc, val) => acc.concat(val?.data), [])
+    : [];
+
   const updateItem = async () => {
     try {
       // const res=await authenticateService.
@@ -60,7 +74,7 @@ const HomeScreen = () => {
 
       <TouchableOpacity
         onPress={async () => {
-          await fetchNextPage();
+          hasNextPage && (await fetchNextPage());
           console.log('next');
         }}>
         <Text> Next Page</Text>
