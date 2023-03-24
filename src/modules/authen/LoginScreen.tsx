@@ -15,6 +15,8 @@ import handleApiError from '~services/api/handle-api_error';
 import Loading from '~components/loading/Loading';
 import {navigationServices} from '~navigation/navigation-services';
 import CountDown from '~components/count-down/CountDown';
+import RadarChartCustom from '~modules/radar/RadarChartCustom';
+import ProgressBarInternal from '~modules/progress/StatsCard';
 
 type FormValues = {
   username: string;
@@ -91,6 +93,13 @@ const LoginScreen = () => {
 
   useEffect(() => {
     console.log('useEffect cha', a);
+    const time = setInterval(() => {
+      setA((rePre): any => {
+        if (rePre === 90) clearInterval(time);
+        return rePre + 10;
+      });
+    }, 1000);
+
     // return () => {
     //   console.log('return 1 time', a);
     // };
@@ -98,7 +107,12 @@ const LoginScreen = () => {
 
   return (
     <>
-      {console.log('Re - render Cha ne', a)}
+      <ProgressBarInternal />
+      {/* <RadarChartCustom
+        values={['', '', '3', '4', '5', '6']}
+        scores={[14, 24, 50, 14, 41, 40]}
+      /> */}
+      {/* {console.log('Re - render Cha ne', a)}
       <View style={[styles.container, {marginBottom: inset.bottom || 0}]}>
         <View style={styles.body}>
           <Text1 fontType={2} regular style={styles.txtTitle}>
@@ -145,7 +159,7 @@ const LoginScreen = () => {
         </View>
         <CountDown value={a} />
         <Loading isVisible={isLoading} />
-      </View>
+      </View> */}
     </>
   );
 };
