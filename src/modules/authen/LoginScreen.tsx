@@ -16,7 +16,7 @@ import Loading from '~components/loading/Loading';
 import {navigationServices} from '~navigation/navigation-services';
 import CountDown from '~components/count-down/CountDown';
 import RadarChartCustom from '~modules/radar/RadarChartCustom';
-import ProgressBarInternal from '~modules/progress/StatsCard';
+import LineChart from '~modules/progress/BasicLineChart';
 
 type FormValues = {
   username: string;
@@ -107,7 +107,21 @@ const LoginScreen = () => {
 
   return (
     <>
-      <ProgressBarInternal />
+      <LineChart
+        line_chart_data={[
+          {month: '12:00', value: 70},
+          {month: '13:00', value: 75},
+          {month: '14:00', value: 80},
+          {month: '15:00', value: 125},
+          {month: '16:00', value: 150},
+          {month: '17:00', value: 145},
+        ]}
+        containerHeight={400}
+        circleColor="#daa520"
+        circleRadius={4}
+        axisColor="#fff"
+        axisWidth={2}
+      />
       {/* <RadarChartCustom
         values={['', '', '3', '4', '5', '6']}
         scores={[14, 24, 50, 14, 41, 40]}
